@@ -149,13 +149,13 @@ def compact_part2(analyse):
             space_size = analyse[-1][idx]
             if space_size >= 0:
                 disk_layout.append([space_size])
-    #print(disk_layout)
+    print(disk_layout)
 
     # fix only holes
     t_blank = len(analyse[-1])
     blank_pointer = 0
     while blank_pointer != t_blank:
-        print(blank_pointer)
+        #print(blank_pointer)
         liste = list(analyse.keys())
         #print(f' pointeur : {blank_pointer}, memoire : {analyse[-1][blank_pointer]}, disk {disk_layout[2*blank_pointer+1]}')
         for i in range(len(liste)-1, 0, -1):
@@ -169,7 +169,7 @@ def compact_part2(analyse):
                 blank_pointer+=1
                 break
         #print(f"blanck : {analyse[-1]}, pointeur : {blank_pointer}")
-        #print(disk_layout)
+        print(disk_layout)
     
         
     # Step 3: Return the final disk layout
@@ -194,11 +194,13 @@ def calcul(compacted):
 
 test = "2333133121414131402\n"
 
-a = 0
-b = 1
+a = 1
+b = 0
 if a:
     analyse = analysis(test)
+    print(analyse)
     compacted = compact(analyse)
+    print(compacted)
     print(calcul(compacted))
 
 # -------------- CHALLENGE -------------- #
@@ -209,7 +211,7 @@ if a :
     print(calcul(compacted))
 
 ################# PART 2 ##################
-
+print('############################')
 analyse = analysis(test)
 compacted_2 = compact_part2(analyse)
 print(compacted_2)
