@@ -132,7 +132,7 @@ def modification(disk_layout, blank_pointer, id_fin, nb_file):
     #print(f"apres modif {new_disk_layout[1 +2*blank_pointer]}")
     return new_disk_layout
 
-def compact_part2(analyse):
+def compact_part2_old(analyse):
     #print(analyse)
     # Step 1: Build the initial disk layout as a list of spaces and file IDs
     disk_layout = []
@@ -169,7 +169,7 @@ def compact_part2(analyse):
                 blank_pointer+=1
                 break
         #print(f"blanck : {analyse[-1]}, pointeur : {blank_pointer}")
-        print(disk_layout)
+        #print(disk_layout)
     
         
     # Step 3: Return the final disk layout
@@ -183,6 +183,51 @@ def compact_part2(analyse):
             output += [0]*disk_layout[i][0]
     return output
 
+
+def compact_part2(analyse):
+    # Step 1: Build the initial disk layout as a list of spaces and file IDs
+    disk_layout = []
+    t = len(analyse)
+    for idx in range(t):
+        file_size = analyse.get(idx, 0)
+        if file_size > 0:
+            disk_layout.append([idx] * file_size)
+        
+        # Append the corresponding free space
+        if idx == t-2:
+            break
+        else:
+            space_size = analyse[-1][idx]
+            if space_size >= 0:
+                disk_layout.append([space_size])
+
+    liste_pointeur = list(analyse.keys())[1:]
+    nb_pointeur = len(liste_pointeur)
+
+    number_blanks = len(analyse[-1])
+    for pointeur in range(nb_pointeur-1, 0, -1):
+        space_disk = analyse[pointeur]
+        blank_pointer = 0
+        while blank_pointer != number_blanks:
+            if disk_layout[1 + 2*blank_pointer][0] >= space_disk:
+                #print('\n',pointeur)
+                disk_layout[2*blank_pointer] = (disk_layout[2*blank_pointer]) + ([pointeur]*space_disk)
+                disk_layout[1 + 2*blank_pointer][0] -= space_disk
+                disk_layout[2*pointeur] = [0]*space_disk + disk_layout[2*pointeur][space_disk:]
+                #print(disk_layout)
+                break
+            blank_pointer += 1
+
+
+    output = []
+    for i in range(len(disk_layout)):
+        if i%2==0:
+            output += disk_layout[i]
+        elif disk_layout[i] == []:
+            pass
+        else:
+            output += [0]*disk_layout[i][0]
+    return output
         
 def calcul(compacted):
     somme = 0
@@ -194,8 +239,8 @@ def calcul(compacted):
 
 test = "2333133121414131402\n"
 
-a = 1
-b = 0
+a = 0
+b = 1
 if a:
     analyse = analysis(test)
     print(analyse)
@@ -214,8 +259,10 @@ if a :
 print('############################')
 analyse = analysis(test)
 compacted_2 = compact_part2(analyse)
+compacted_2_old = compact_part2_old(analyse)
 print(compacted_2)
 print(calcul(compacted_2))
+print(calcul(compacted_2_old))
 
 
 print('\n###########################################\n')
